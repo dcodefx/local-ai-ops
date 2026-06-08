@@ -60,23 +60,21 @@ Sistem, bütçe dostu cihazları tek bir OpenAI uyumlu API arkasında birleştir
 | Cihaz Rolü | İşletim Sistemi / Katman | Donanım Özellikleri |
 | --- | --- | --- |
 | **GPU Sunucu** | CachyOS (Linux, xfce4) | Intel i7 4th Gen, NVIDIA GTX 960M (4GB VRAM), 16GB RAM |
-| **CPU Sunucu** | Proxmox VE 8.x (Debian 12 LXC) | Intel i7-4790 (4C/8T), 32GB DDR3 RAM |
+| **CPU Sunucu** | (Proxmox VE 9.x) Debian 12 LXC (cpu=host) | Intel i7 4th Gen (4C/8T), 32GB DDR3 RAM |
 | **Geliştirici PC** | Herhangi bir OS | Sadece VS Code ve istemci eklentileri yükü barındırır |
 
 ---
 
 ##  Öne Çıkan v1 Yetenekleri (Kullanım)
 
-Geliştirme yaparken tek bir LiteLLM uç noktasına bağlanarak şu özellikleri kullanabilirsiniz:
+Geliştirme yaparken tek bir `LiteLLM` uç noktasına bağlanarak şu özellikleri kullanabilirsiniz:
 
-* **Hızlı Kod Tamamlama (Tab-Autocomplete):** GPU'da tamamen VRAM içinde koşan 3B model ile <100ms tepki süresi.
-* **`@web` (MCP Search Entegrasyonu):** Güncel API değişiklikleri veya kütüphane sürümleri için DuckDuckGo üzerinden asenkron (`uvloop` optimize) canlı arama.
-
-
-* **`@codebase` (Yerel RAG):** Nomic-Embed-Text ile yerel proje dizinini tarama ve indeksleme yeteneği.
-
-
-* **Model Switcher:** Gelişmiş otomatik systemd scripti sayesinde tek komutla (şimdilik sadece cpu tarafa uyarlandı) (`model-switch qwen3 | deepseek`) bellek kısıtlarına takılmadan modeller arası geçiş.
+* **Hızlı Kod Tamamlama:** GPU'da 3B model ile <100ms tepki.
+* **Özel yazılmış web search `MCP`ile Güncel Arama:** DuckDuckGo üzerinden MCP entegrasyonu.
+* **Derin Analiz için CPU Modeli:** 30B MoE model ile büyük bağlamlı kod incelemesi.
+* **Model Switcher:** Gelişmiş otomatik `systemd` scripti sayesinde tek komutla (şimdilik sadece cpu tarafa uyarlandı) (`model-switch qwen3 | deepseek`) bellek kısıtlarına takılmadan modeller arası geçiş. 
+Not: bu script şimdilik sadece ilgili cihaz üzerinde çalışır. Bu donanım özelliklerinde  aynı anda tek bir buyuk model çalışabildiği için tasarlandı
+* **IDE Entegrasyonu:** VS Code + Continue.dev / OpenCode.ai ile tek API üzerinden erişim.
 
 ---
 
