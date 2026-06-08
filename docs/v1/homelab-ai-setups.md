@@ -482,7 +482,7 @@ sudo systemctl restart llama-embed
 ## B.2 — CPU SUNUCU KURULUMU (Proxmox LXC - Debian 12) 
 
 #### LXC + Debian 12 + llama.cpp CPU + LiteLLM
-**LXC (Linux Container)** ise işletim sistemi çekirdeğini host ile paylaşır, sadece kullanıcı alanını izole eder. Sonuç: bare-metal'a %95 yakın performans, ama yine de güvenli izolasyon. 32GB RAM'in tamamını modele verebilirsin.
+**LXC (Linux Container)** ise işletim sistemi çekirdeğini host ile paylaşır, sadece kullanıcı alanını izole eder. Sonuç: bare-metal'a %95 yakın performans, ama yine de güvenli izolasyon. 32GB RAM'in tamamını modele verebilirsiniz,ama iyi olanı 28GB civarı olacaktır..
 
 Burada hem büyük kod modeli hem de LiteLLM proxy çalışacak.
 
@@ -559,7 +559,7 @@ apt install -y \
 
 # Python kütüphaneleri
 # --break-system-packages: Debian 12, pip'in sistem Python'ına dokunmasını kısıtlar
-# Bu flag olmadan "externally-managed-environment" hatası alırsın
+# Bu flag olmadan "externally-managed-environment" hatası alırsınız
 pip3 install --break-system-packages \
   huggingface-hub \
   lancedb \
@@ -1555,19 +1555,13 @@ mcpServers:
 Bu ayarlarla artık Continue.dev sohbet ekranında iki model arasında geçiş yapabilirsiniz:
 - **Hızlı GPU:** Anlık tamamlama, küçük düzenlemeler
 - **Derin CPU:** Proje çapında analiz, karmaşık kod üretimi
-test: curl http://localhost:8081/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{
-    "messages":[{"role":"user","content":"merhaba, nasılsın?"}],
-    "max_tokens":32,
-    "stream":false
-  }'
+
 ---
 
 # D — KOD TABANI ARAMA (LanceDB + DuckDB, Opsiyonel) -( ## Continue.Dev indexleme yaptığı için UYGULANMADI)
 
 **Önemli:** Continue.dev’in kendi `@codebase` özelliği de arama yapabilir. Eğer onu kullanmak isterseniz LanceDB’ye gerek kalmaz.  
-Ama tam kontrol ve özel chunking istiyorsanız, kurulması iyi olacaktıe bu durumda,  sistemi kurun ve Continue’un dahili indekslemesini kapatın (`"disableIndexing": true` ekleyin).
+Ama tam kontrol ve özel chunking istiyorsanız, kurulması iyi olacaktır. Bu durumda,  sistemi kurun ve Continue’un dahili indekslemesini kapatın (`"disableIndexing": true` ekleyin).
 
 **Not:** Bu kısım  uygulanmadığı için bu dökümanda yer verilmemiştir.
 
