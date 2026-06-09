@@ -1,0 +1,111 @@
+# /opt/litellm/config.yaml
+# Tüm modeller — aktif/pasif geçişler için yorum satırı kullanın
+
+model_list:
+
+# ──────────────────────────────────────────────────────
+# GPU LAPTOP — 10.10.10.3
+# ──────────────────────────────────────────────────────
+
+# Tab autocomplete (her zaman açık)
+- model_name: hizli-gpu
+  litellm_params:
+    model: openai/custom
+    api_base: http://10.10.10.3:8080/v1
+    api_key: dummy
+    timeout: 60
+    # Modelin ChatML şablonunu korumak ve prompt bozulmasını önlemek için rol eşleştirmesi [cite: 10, 15]
+    roles: { "system": "system", "user": "user", "assistant": "assistant" }
+
+# Embedding / RAG (her zaman açık)
+- model_name: hizli-embed
+  litellm_params:
+    model: openai/custom
+    api_base: http://10.10.10.3:8081/v1
+    custom_endpoint_type: "openai"
+    api_key: dummy
+    timeout: 60
+
+    # ──────────────────────────────────────────────────────
+    # CPU SUNUCU — 127.0.0.1 (Proxmox LXC)
+    # Aşağıdaki modellerden yalnızca biri aynı anda çalışır.
+    # Aktif olanı systemctl start ile başlatın.
+    # ──────────────────────────────────────────────────────
+
+# Qwen3-Coder-30B-A3B (alias: qwen3-30b, port 8081)
+- model_name: derin-cpu
+  litellm_params:
+    model: openai/custom
+    api_base: http://127.0.0.1:8081/v1
+    api_key: dummy
+    timeout: 300
+    # Sistem talimatlarının ve kod asistanı rollerinin doğru tercümesi için [cite: 2, 12]
+    roles: { "system": "system", "user": "user", "assistant": "assistant" }
+
+# DeepSeek-Coder-V2-Lite (alias: deepseek, port 8082)
+- model_name: derin-cpu-deepseek
+  litellm_params:
+    model: openai/custom
+    api_base: http://127.0.0.1:8082/v1
+    api_key: dummy
+    timeout: 300
+    roles: { "system": "system", "user": "user", "assistant": "assistant" }
+
+# Gemma4-26B-A4B (alias: gemma4, port 8083)
+- model_name: derin-cpu-gemma
+  litellm_params:
+    model: openai/custom
+    api_base: http://127.0.0.1:8083/v1
+    api_key: dummy
+    timeout: 300
+    roles: { "system": "system", "user": "user", "assistant": "assistant" }
+
+# Qwen3.6 Mudler Lordx64 (alias: qwen36-mudler-lordx64, port 8084)
+- model_name: qwen36-mudler-lordx64
+  litellm_params:
+    model: openai/custom
+    api_base: http://127.0.0.1:8084/v1
+    api_key: dummy
+    timeout: 300
+    roles: { "system": "system", "user": "user", "assistant": "assistant" }
+
+# Qwen3.6 Mudler Qwopus (alias: qwen36-mudler-qwopus, port 8085)
+- model_name: qwen36-mudler-qwopus
+  litellm_params:
+    model: openai/custom
+    api_base: http://127.0.0.1:8085/v1
+    api_key: dummy
+    timeout: 300
+    roles: { "system": "system", "user": "user", "assistant": "assistant" }
+
+# Qwen3.6 Dyluhn/lordx64 (alias: qwen36-dyluhn-lordx64, port 8086)
+- model_name: qwen36-dyluhn-lordx64
+  litellm_params:
+    model: openai/custom
+    api_base: http://127.0.0.1:8086/v1
+    api_key: dummy
+    timeout: 300
+    roles: { "system": "system", "user": "user", "assistant": "assistant" }
+
+# Gemma4-26B-A4B Claude-Opus-Distill (alias: gemma4-cla-ops, port 8087)
+- model_name: gemma4-cla-ops
+  litellm_params:
+    model: openai/custom
+    api_base: http://127.0.0.1:8087/v1
+    api_key: dummy
+    timeout: 300
+    roles: { "system": "system", "user": "user", "assistant": "assistant" }
+
+# Qwen3.6-35B-A3B Kimi Reasoning Distilled (alias: qwen36-kimi-distil, port 8089)
+- model_name: qwen36-kimi-distil
+  litellm_params:
+    model: openai/custom
+    api_base: http://127.0.0.1:8089/v1
+    api_key: dummy
+    timeout: 300
+    roles: { "system": "system", "user": "user", "assistant": "assistant" }
+
+general_settings:
+  master_key: "your-litellm key"
+  request_timeout: 600
+  store_model_in_db: false

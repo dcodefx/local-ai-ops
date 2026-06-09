@@ -1,0 +1,233 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  
+  "model": "homelab/derin-cpu",  
+  "small_model": "homelab/hizli-gpu",
+
+  "provider": {
+    "homelab": {
+      "name": "Homelab LiteLLM",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://192.168.1.50:4000/v1",
+        "apiKey": "{env:LITELLM_API_KEY}",
+        "timeout": 300000,
+        "chunkTimeout": 60000
+      },
+      "models": {
+        "hizli-gpu": {
+          "name": "⚡ Hızlı GPU — Qwen2.5-Coder-3B",
+          "tool_call": true,
+          "limit": { "context": 8192, "output": 2048 },
+          "options": { "temperature": 0.1, "topP": 0.9 }
+        },
+        "derin-cpu": {
+          "name": "🧠 CPU — Qwen3-Coder-30B",
+          "tool_call": true,
+          "limit": { "context": 16384, "output": 4096 },
+          "variants": {
+            "precise": {
+              "options": { "temperature": 0.0, "topP": 0.9 }
+            },
+            "fast": {
+              "options": { "temperature": 0.7, "topP": 0.95 }
+            }
+          },
+          "options": { "temperature": 0.7, "topP": 0.95 }
+        },
+        "derin-cpu-deepseek": {
+          "name": "🔬 CPU — DeepSeek-Coder-V2-Lite",
+          "tool_call": false,
+          "limit": { "context": 16384, "output": 4096 },
+          "options": { "temperature": 0.0, "topP": 0.95 }
+        },
+        "derin-cpu-gemma": {
+          "name": "🌟 CPU — Gemma4-26B",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "limit": { "context": 36864, "output": 4096 },
+          "variants": {
+            "precise": {
+              "options": { "temperature": 0.0, "topP": 0.9 }
+            },
+            "balanced": {
+              "options": { "temperature": 0.8, "topP": 0.92 }
+            },
+            "creative": {
+              "options": { "temperature": 1.0, "topP": 0.98, "topK": 100 }
+            }
+          },
+          "options": { "temperature": 1.0, "topP": 0.95, "topK": 64 }
+        },
+        "gemma4-cla-ops": {
+          "name": "🌟 CPU — Gemma4 Claude Opus Distill",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "limit": { "context": 36864, "output": 4096 },
+          "variants": {
+            "precise": {
+              "options": { "temperature": 0.0, "topP": 0.9 }
+            },
+            "balanced": {
+              "options": { "temperature": 0.8, "topP": 0.92 }
+            },
+            "creative": {
+              "options": { "temperature": 1.0, "topP": 0.98, "topK": 100 }
+            }
+          },
+          "options": { "temperature": 1.0, "topP": 0.95, "topK": 64 }
+        },
+        "qwen36-mudler-lordx64": {
+          "name": "🚀 CPU MTP — Qwen3.6 mudler-lordx64",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "limit": { "context": 16384, "output": 4096 },
+          "variants": {
+            "thinking": {
+              "options": { "temperature": 1.0, "topP": 0.95 }
+            },
+            "balanced": {
+              "options": { "temperature": 0.8, "topP": 0.92 }
+            },
+            "coding": {
+              "options": { "temperature": 0.6, "topP": 0.9 }
+            }
+          },
+          "options": { "temperature": 1.0, "topP": 0.95 }
+        },
+        "qwen36-mudler-qwopus": {
+          "name": "🚀 CPU MTP — Qwen3.6 mudler-qwopus",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "limit": { "context": 16384, "output": 4096 },
+          "variants": {
+            "thinking": {
+              "options": { "temperature": 1.0, "topP": 0.95 }
+            },
+            "balanced": {
+              "options": { "temperature": 0.8, "topP": 0.92 }
+            },
+            "coding": {
+              "options": { "temperature": 0.6, "topP": 0.9 }
+            }
+          },
+          "options": { "temperature": 1.0, "topP": 0.95 }
+        },
+        "qwen36-dyluhn-lordx64": {
+          "name": "🚀 CPU MTP — Qwen3.6 dyluhn-lordx64",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "limit": { "context": 16384, "output": 4096 },
+          "variants": {
+            "thinking": {
+              "options": { "temperature": 1.0, "topP": 0.95 }
+            },
+            "balanced": {
+              "options": { "temperature": 0.8, "topP": 0.92 }
+            },
+            "coding": {
+              "options": { "temperature": 0.6, "topP": 0.9 }
+            }
+          },
+          "options": { "temperature": 1.0, "topP": 0.95 }
+        },
+        "qwen36-kimi-distil": {
+          "name": "🧠 CPU — Qwen3.6 Kimi K2.6 Reasoning",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "limit": { "context": 16384, "output": 4096 },
+          "variants": {
+            "thinking": {
+              "options": { "temperature": 1.0, "topP": 0.95 }
+            },
+            "balanced": {
+              "options": { "temperature": 0.8, "topP": 0.92 }
+            },
+            "coding": {
+              "options": { "temperature": 0.6, "topP": 0.9 }
+            }
+          },
+          "options": { "temperature": 1.0, "topP": 0.95 }
+        }
+      }
+    }
+  },
+
+  "agent": {    
+    "hizli": {
+      "model": "homelab/hizli-gpu",
+      "mode": "subagent",
+      "description": "Hızlı GPU — anlık kod tamamlama ve küçük görevler",
+      "temperature": 0.1
+    },
+    "derin": {
+      "model": "homelab/derin-cpu",
+      "mode": "subagent",
+      "description": "CPU — mimari analiz ve derin kod tasarımı",
+      "temperature": 0.7
+    },
+    "deepseek": {
+      "model": "homelab/derin-cpu-deepseek",
+      "mode": "subagent",
+      "description": "CPU — kod completion ve basit düzenleme",
+      "temperature": 0.0
+    },
+    "gemma": {
+      "model": "homelab/derin-cpu-gemma",
+      "mode": "subagent",
+      "description": "CPU — multimodal analiz ve yaratıcı görevler",
+      "temperature": 1.0
+    },
+    "gemma-claude": {
+      "model": "homelab/gemma4-cla-ops",
+      "mode": "subagent",
+      "description": "CPU — Claude Opus reasoning distill, derin analiz",
+      "temperature": 1.0
+    },
+    "mtp-lordx64": {
+      "model": "homelab/qwen36-mudler-lordx64",
+      "mode": "subagent",
+      "description": "CPU MTP — speculative decoding optimize Qwen3.6",
+      "temperature": 1.0
+    },
+    "mtp-mudler": {
+      "model": "homelab/qwen36-mudler-qwopus",
+      "mode": "subagent",
+      "description": "CPU MTP — APEX Qwen3.6 reasoning",
+      "temperature": 1.0
+    },
+    "mtp-dyluhn": {
+      "model": "homelab/qwen36-dyluhn-lordx64",
+      "mode": "subagent",
+      "description": "CPU MTP — imatrix calibration Qwen3.6",
+      "temperature": 1.0
+    },
+    "mtp-kimi": {
+      "model": "homelab/qwen36-kimi-distil",
+      "mode": "subagent",
+      "description": "CPU — Kimi K2.6 reasoning distill",
+      "temperature": 1.0
+    }
+  },
+
+  "mcp": {
+    "web-search-homelab": {
+      "type": "remote",
+      "url": "http://192.168.1.50:8000/sse",
+      "headers": {
+        "X-API-Key": "{env:MCP_API_KEY}"
+      },
+      "enabled": true
+    }
+  },
+
+  "instructions": [
+    "~/.opencode/instructions/mcp-guidance.md"
+  ]
+}

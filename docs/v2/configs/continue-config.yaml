@@ -1,0 +1,680 @@
+name: Homelab AI
+version: 1.0.0
+schema: v1
+
+# ══════════════════════════════════════════════════════════════
+# MODELLER
+# ══════════════════════════════════════════════════════════════
+models:
+
+  # ── GPU — Chat + Edit + Apply ──────────────────────────────
+  - name: "⚡ Hızlı GPU — Qwen2.5-Coder-3B"
+    provider: openai
+    model: hizli-gpu
+    apiBase: http://192.168.1.50:4000/v1
+    requestOptions:
+      headers:
+        Authorization: "Bearer your-litellm key"
+      timeout: 30000
+    capabilities:
+      - tool_use
+      - image_input
+    roles:
+      - chat
+      - edit
+      - apply
+    cacheBehavior:
+      cacheSystemMessage: true
+      cacheConversation: true
+    defaultCompletionOptions:
+      temperature: 0.1
+      maxTokens: 2048
+      minP: 0.05
+    chatOptions:
+      baseSystemMessage: |
+        Sen ileri düzey Python kütüphanesi ve AI framework geliştirme konusunda uzman bir yazılım mimarısın.
+        Yanıtların her zaman Türkçe olsun.
+        Uzman olduğun alanlar:
+        - Zaman ve alan karmaşıklığı analizi (Big-O, amortize analiz)
+        - NumPy/PyTorch uyumlu API ve veri yolu tasarımı
+        - Saf Python ile C extension / Cython / Numba performans kararları
+        - Async/await, thread-safe veri yapıları, GIL stratejileri
+        - Kütüphane paketi mimarisi, type annotation, Protocol
+        - Pytest, hypothesis, benchmark yazımı
+        - Bellek ve CPU profili (tracemalloc, cProfile, scalene)
+
+        Yanıt formatın:
+        1. Sorunun kısa analizi
+        2. Kod (type hint + docstring)
+        3. Zaman/alan karmaşıklığı
+        4. Edge case ve performans tuzakları
+
+      baseAgentSystemMessage: |
+        Sen bir Python kütüphanesi geliştirme uzmanısın. Yanıtların Türkçe olsun.
+        Güncel bilgi, API değişiklikleri, yeni kütüphane sürümleri veya
+        dokümantasyon gerektiren sorularda web_search aracını kullan.
+        Yerel codebase bilgisi yeterliyse arama yapma.
+
+      basePlanSystemMessage: |
+        Sen bir planlama asistanısın.
+
+        GÖREVİN:
+        - Kullanıcının isteğini analiz et
+        - Adım adım bir plan oluştur
+        - Her adımı gerekçelendir
+
+        KISITLAR:
+        - Kod yazma
+        - Dosya oluşturma veya düzenleme
+        - Terminal komutu çalıştırma
+        - Sadece okuma yap ve plan oluştur
+
+        ÇIKTI FORMATI:
+        1. Problemin analizi
+        2. Gerekli dosyalar
+        3. Adım adım plan
+        4. Olası riskler
+
+  # ── GPU — Autocomplete ─────────────────────────────────────
+  - name: "Autocomplete — GPU"
+    provider: openai
+    model: hizli-gpu
+    apiBase: http://192.168.1.50:4000/v1
+    requestOptions:
+      headers:
+        Authorization: "Bearer your-litellm key"
+      extraBodyProperties:
+        think: false
+    capabilities:
+      - tool_use
+    roles:
+      - autocomplete
+    autocompleteOptions:
+      maxPromptTokens: 512
+      debounceDelay: 300
+      useCache: true
+      onlyMyCode: true
+      useImports: true
+      useRecentlyEdited: true
+      useRecentlyOpened: true
+      disable: false
+
+  # ── CPU — Derin analiz (Qwen3-Coder-30B) ───────────────────
+  - name: "🧠 Derin CPU — Qwen3-Coder-30B MoE"
+    provider: openai
+    model: derin-cpu
+    apiBase: http://192.168.1.50:4000/v1
+    requestOptions:
+      headers:
+        Authorization: "Bearer your-litellm key"
+      timeout: 180000
+    capabilities:
+      - tool_use
+      - image_input
+    roles:
+      - chat
+      - edit
+      - apply
+    cacheBehavior:
+      cacheSystemMessage: true
+      cacheConversation: true
+    defaultCompletionOptions:
+      temperature: 0.0
+      maxTokens: 4096
+      minP: 0.05
+    chatOptions:
+      baseSystemMessage: |
+        Sen ileri düzey Python kütüphanesi ve AI framework geliştirme konusunda uzman bir yazılım mimarısın.
+        Yanıtların her zaman Türkçe olsun.
+        Uzman olduğun alanlar:
+        - Zaman ve alan karmaşıklığı analizi (Big-O, amortize analiz)
+        - NumPy/PyTorch uyumlu API ve veri yolu tasarımı
+        - Saf Python ile C extension / Cython / Numba performans kararları
+        - Async/await, thread-safe veri yapıları, GIL stratejileri
+        - Kütüphane paketi mimarisi, type annotation, Protocol
+        - Pytest, hypothesis, benchmark yazımı
+        - Bellek ve CPU profili (tracemalloc, cProfile, scalene)
+
+        Yanıt formatın:
+        1. Sorunun kısa analizi
+        2. Kod (type hint + docstring)
+        3. Zaman/alan karmaşıklığı
+        4. Edge case ve performans tuzakları
+
+      baseAgentSystemMessage: |
+        Sen bir Python kütüphanesi geliştirme uzmanısın. Yanıtların Türkçe olsun.
+        Güncel bilgi, API değişiklikleri, yeni kütüphane sürümleri veya
+        dokümantasyon gerektiren sorularda web_search aracını kullan.
+        Yerel codebase bilgisi yeterliyse arama yapma.
+
+      basePlanSystemMessage: |
+        Sen bir planlama asistanısın.
+
+        GÖREVİN:
+        - Kullanıcının isteğini analiz et
+        - Adım adım bir plan oluştur
+        - Her adımı gerekçelendir
+
+        KISITLAR:
+        - Kod yazma
+        - Dosya oluşturma veya düzenleme
+        - Terminal komutu çalıştırma
+        - Sadece okuma yap ve plan oluştur
+
+        ÇIKTI FORMATI:
+        1. Problemin analizi
+        2. Gerekli dosyalar
+        3. Adım adım plan
+        4. Olası riskler
+
+  # ── CPU — DeepSeek-Coder-V2-Lite ───────────────────────────
+  - name: "🔬 Derin CPU — DeepSeek-Coder-V2-Lite"
+    provider: openai
+    model: derin-cpu-deepseek
+    apiBase: http://192.168.1.50:4000/v1
+    requestOptions:
+      headers:
+        Authorization: "Bearer your-litellm key"
+      timeout: 180000
+    capabilities:
+      - tool_use
+    roles:
+      - chat
+      - edit
+      - apply
+    cacheBehavior:
+      cacheSystemMessage: true
+      cacheConversation: true
+    defaultCompletionOptions:
+      temperature: 0.0
+      maxTokens: 4096
+      minP: 0.05
+    chatOptions:
+      baseSystemMessage: |
+        Sen algoritma uzmanı bir Python geliştiricisisin.
+        Yanıtların her zaman Türkçe olsun.
+        Algoritmik sorunlarda adım adım çözüm göster, karmaşıklık analizi ver, alternatif yaklaşımları karşılaştır.
+      baseAgentSystemMessage: |
+        Güncel bilgi gerektiren sorularda web_search aracını kullan.
+      basePlanSystemMessage: |
+        Sen bir planlama asistanısın.
+
+        GÖREVİN:
+        - Kullanıcının isteğini analiz et
+        - Adım adım bir plan oluştur
+        - Her adımı gerekçelendir
+
+        KISITLAR:
+        - Kod yazma
+        - Dosya oluşturma veya düzenleme
+        - Terminal komutu çalıştırma
+        - Sadece okuma yap ve plan oluştur
+
+        ÇIKTI FORMATI:
+        1. Problemin analizi
+        2. Gerekli dosyalar
+        3. Adım adım plan
+        4. Olası riskler
+
+  # ── CPU — Gemma4-26B ───────────────────────────────────────
+  - name: "🌟 Derin CPU — Gemma4-26B MoE"
+    provider: openai
+    model: derin-cpu-gemma
+    apiBase: http://192.168.1.50:4000/v1
+    requestOptions:
+      headers:
+        Authorization: "Bearer your-litellm key"
+      timeout: 180000
+    capabilities:
+      - tool_use
+      - image_input
+    roles:
+      - chat
+      - edit
+      - apply
+    cacheBehavior:
+      cacheSystemMessage: true
+      cacheConversation: true
+    defaultCompletionOptions:
+      temperature: 1.0
+      topP: 0.95
+      topK: 64
+      maxTokens: 4096
+      minP: 0.05
+    chatOptions:
+      baseSystemMessage: |
+        Sen Python AI kütüphanesi geliştiren bir uzman mühendissin.
+        Yanıtların her zaman Türkçe olsun.
+        Tasarım kararlarını gerekçelendir, en iyi pratikleri uygula.
+      baseAgentSystemMessage: |
+        Güncel bilgi gerektiren sorularda web_search aracını kullan.
+      basePlanSystemMessage: |
+        Sen bir planlama asistanısın.
+
+        GÖREVİN:
+        - Kullanıcının isteğini analiz et
+        - Adım adım bir plan oluştur
+        - Her adımı gerekçelendir
+
+        KISITLAR:
+        - Kod yazma
+        - Dosya oluşturma veya düzenleme
+        - Terminal komutu çalıştırma
+        - Sadece okuma yap ve plan oluştur
+
+        ÇIKTI FORMATI:
+        1. Problemin analizi
+        2. Gerekli dosyalar
+        3. Adım adım plan
+        4. Olası riskler
+
+  # ── CPU — Gemma4 Claude Opus Distill ───────────────────────
+  - name: "🌟 Derin CPU — Gemma4 Claude Opus Distill"
+    provider: openai
+    model: gemma4-cla-ops
+    apiBase: http://192.168.1.50:4000/v1
+    requestOptions:
+      headers:
+        Authorization: "Bearer your-litellm key"
+      timeout: 180000
+    contextLength: 36864
+    capabilities:
+      - tool_use
+      - image_input
+    roles:
+      - chat
+      - edit
+      - apply
+    cacheBehavior:
+      cacheSystemMessage: true
+      cacheConversation: true
+    defaultCompletionOptions:
+      temperature: 1.0
+      topP: 0.95
+      topK: 64
+      maxTokens: 4096
+      contextLength: 36864
+      minP: 0.05
+    chatOptions:
+      baseSystemMessage: |
+        Sen Claude Opus'tan distill edilmiş güçlü bir reasoning modelisin.
+        Yanıtların her zaman Türkçe olsun.
+        Derinlemesine analiz yap, adım adım düşün.
+      baseAgentSystemMessage: |
+        Güncel bilgi gerektiren sorularda web_search aracını kullan.
+      basePlanSystemMessage: |
+        Sen bir planlama asistanısın.
+
+        GÖREVİN:
+        - Kullanıcının isteğini analiz et
+        - Adım adım bir plan oluştur
+        - Her adımı gerekçelendir
+
+        KISITLAR:
+        - Kod yazma
+        - Dosya oluşturma veya düzenleme
+        - Terminal komutu çalıştırma
+        - Sadece okuma yap ve plan oluştur
+
+        ÇIKTI FORMATI:
+        1. Problemin analizi
+        2. Gerekli dosyalar
+        3. Adım adım plan
+        4. Olası riskler
+
+  # ══════════════════════════════════════════════════════════
+  # Qwen3.6 MTP DESTEKLİ MODELLER
+  # ══════════════════════════════════════════════════════════
+
+  # Qwen3.6 mudler/lordx64 (port 8084)
+  - name: "🚀 CPU MTP — Qwen3.6 (lordx64) Claude 4.7 Distilled"
+    provider: openai
+    model: qwen36-mudler-lordx64
+    apiBase: http://192.168.1.50:4000/v1
+    requestOptions:
+      headers:
+        Authorization: "Bearer your-litellm key"
+      timeout: 180000
+      extraBodyProperties:
+        enable_thinking: true
+    capabilities:
+      - tool_use
+      - image_input
+    roles:
+      - chat
+      - edit
+      - apply
+    cacheBehavior:
+      cacheSystemMessage: true
+      cacheConversation: true
+    defaultCompletionOptions:
+      temperature: 0.0
+      maxTokens: 4096
+      topP: 0.95
+      minP: 0.05
+    chatOptions:
+      baseSystemMessage: |
+        Sen güçlü bir reasoning modelisin. Yanıtların Türkçe olsun.
+        Kısa ve yüksek doğruluklu cevap üret. Kod örneklerinde her zaman tip belirt.
+      baseAgentSystemMessage: |
+        Güncel bilgi gerektiren sorularda web_search aracını kullan.
+      basePlanSystemMessage: |
+        Sen bir planlama asistanısın.
+
+        GÖREVİN:
+        - Kullanıcının isteğini analiz et
+        - Adım adım bir plan oluştur
+        - Her adımı gerekçelendir
+
+        KISITLAR:
+        - Kod yazma
+        - Dosya oluşturma veya düzenleme
+        - Terminal komutu çalıştırma
+        - Sadece okuma yap ve plan oluştur
+
+        ÇIKTI FORMATI:
+        1. Problemin analizi
+        2. Gerekli dosyalar
+        3. Adım adım plan
+        4. Olası riskler
+
+  # Qwen3.6 mudler/qwopus (port 8085)
+  - name: "🚀 CPU MTP — Qwen3.6 (qwopus) APEX"
+    provider: openai
+    model: qwen36-mudler-qwopus
+    apiBase: http://192.168.1.50:4000/v1
+    requestOptions:
+      headers:
+        Authorization: "Bearer your-litellm key"
+      timeout: 180000
+      extraBodyProperties:
+        enable_thinking: true
+    capabilities:
+      - tool_use
+      - image_input
+    roles:
+      - chat
+      - edit
+      - apply
+    cacheBehavior:
+      cacheSystemMessage: true
+      cacheConversation: true
+    defaultCompletionOptions:
+      temperature: 0.0
+      maxTokens: 4096
+      topP: 0.95
+      minP: 0.05
+    chatOptions:
+      baseSystemMessage: |
+        Sen reasoning odaklı bir modelsin. Mantıksal ve tutarlı cevap ver. Yanıtların Türkçe olsun.
+      baseAgentSystemMessage: |
+        Güncel bilgi gerektiren sorularda web_search aracını kullan.
+      basePlanSystemMessage: |
+        Sen bir planlama asistanısın.
+
+        GÖREVİN:
+        - Kullanıcının isteğini analiz et
+        - Adım adım bir plan oluştur
+        - Her adımı gerekçelendir
+
+        KISITLAR:
+        - Kod yazma
+        - Dosya oluşturma veya düzenleme
+        - Terminal komutu çalıştırma
+        - Sadece okuma yap ve plan oluştur
+
+        ÇIKTI FORMATI:
+        1. Problemin analizi
+        2. Gerekli dosyalar
+        3. Adım adım plan
+        4. Olası riskler
+
+  # Qwen3.6 dyluhn/lordx64 (port 8086)
+  - name: "🚀 CPU MTP — Qwen3.6 (dyluhn) variant"
+    provider: openai
+    model: qwen36-dyluhn-lordx64
+    apiBase: http://192.168.1.50:4000/v1
+    requestOptions:
+      headers:
+        Authorization: "Bearer your-litellm key"
+      timeout: 180000
+      extraBodyProperties:
+        enable_thinking: true
+    capabilities:
+      - tool_use
+      - image_input
+    roles:
+      - chat
+      - edit
+      - apply
+    cacheBehavior:
+      cacheSystemMessage: true
+      cacheConversation: true
+    defaultCompletionOptions:
+      temperature: 0.0
+      maxTokens: 4096
+      topP: 0.95
+      minP: 0.05
+    chatOptions:
+      baseSystemMessage: |
+        Sen yüksek kapasiteli reasoning modelisin. Kısa, net ve doğru cevap ver. Yanıtların Türkçe olsun.
+      baseAgentSystemMessage: |
+        Güncel bilgi gerektiren sorularda web_search aracını kullan.
+      basePlanSystemMessage: |
+        Sen bir planlama asistanısın.
+
+        GÖREVİN:
+        - Kullanıcının isteğini analiz et
+        - Adım adım bir plan oluştur
+        - Her adımı gerekçelendir
+
+        KISITLAR:
+        - Kod yazma
+        - Dosya oluşturma veya düzenleme
+        - Terminal komutu çalıştırma
+        - Sadece okuma yap ve plan oluştur
+
+        ÇIKTI FORMATI:
+        1. Problemin analizi
+        2. Gerekli dosyalar
+        3. Adım adım plan
+        4. Olası riskler
+
+  # Qwen3.6 Kimi K2.6 Reasoning Distilled (port 8089)
+  - name: "🧠 Derin CPU — Qwen3.6 Kimi K2.6 Reasoning"
+    provider: openai
+    model: qwen36-kimi-distil
+    apiBase: http://192.168.1.50:4000/v1
+    requestOptions:
+      headers:
+        Authorization: "Bearer your-litellm key"
+      timeout: 180000
+      extraBodyProperties:
+        enable_thinking: true
+    capabilities:
+      - tool_use
+      - image_input
+    roles:
+      - chat
+      - edit
+      - apply
+    cacheBehavior:
+      cacheSystemMessage: true
+      cacheConversation: true
+    defaultCompletionOptions:
+      temperature: 0.0
+      maxTokens: 4096
+      minP: 0.05
+    chatOptions:
+      baseSystemMessage: |
+        Sen Kimi K2.6 reasoning yetenekleriyle distill edilmiş bir modelisin.
+        Yanıtların her zaman Türkçe olsun.
+        Karmaşık problemleri adım adım çöz, neden-sonuç ilişkilerini açıkla.
+      baseAgentSystemMessage: |
+        Güncel bilgi gerektiren sorularda web_search aracını kullan.
+      basePlanSystemMessage: |
+        Sen bir planlama asistanısın.
+
+        GÖREVİN:
+        - Kullanıcının isteğini analiz et
+        - Adım adım bir plan oluştur
+        - Her adımı gerekçelendir
+
+        KISITLAR:
+        - Kod yazma
+        - Dosya oluşturma veya düzenleme
+        - Terminal komutu çalıştırma
+        - Sadece okuma yap ve plan oluştur
+
+        ÇIKTI FORMATI:
+        1. Problemin analizi
+        2. Gerekli dosyalar
+        3. Adım adım plan
+        4. Olası riskler
+
+  # ── Embedding (RAG) ───────────────────────────────────────
+  - name: "Embedding — Nomic"
+    provider: openai
+    model: hizli-embed
+    apiBase: http://192.168.1.50:4000/v1
+    requestOptions:
+      headers:
+        Authorization: "Bearer your-litellm key"
+    capabilities:
+      - embed_text
+    roles:
+      - embed
+    embedOptions:
+      maxChunkSize: 512
+      maxBatchSize: 64
+
+# ══════════════════════════════════════════════════════════════
+# CONTEXT
+# ══════════════════════════════════════════════════════════════
+context:
+  - provider: code
+  - provider: docs
+  - provider: diff
+  - provider: terminal
+  - provider: problems
+  - provider: folder
+  - provider: codebase
+    params:
+      nRetrieve: 25
+      nFinal: 5
+      useReranking: false
+  - provider: open
+    params:
+      onlyPinned: false
+  - provider: tree
+  - provider: os
+  - provider: repo-map
+    params:
+      includeSignatures: true
+
+# ══════════════════════════════════════════════════════════════
+# RULES
+# ══════════════════════════════════════════════════════════════
+rules:
+  - Yanıtların her zaman Türkçe olsun.
+  - Kod bloklarında her zaman dil belirt (```python, ```bash vb.)
+  - Yalnızca talep edilen değişikliği yap, fazlasını ekleme.
+
+# ══════════════════════════════════════════════════════════════
+# PROMPTS (Custom slash commands)
+# ══════════════════════════════════════════════════════════════
+prompts:
+  - name: complexity
+    description: Zaman ve alan karmaşıklığını analiz et
+    prompt: |
+      Seçili kodun zaman karmaşıklığını (Big-O) ve alan karmaşıklığını analiz et.
+      Her döngü katmanını, özyinelemeli çağrıları ve veri yapısı seçimlerini gerekçelendir.
+      Ortalama, en iyi ve en kötü durumları ayrı ayrı ver.
+      Varsa daha verimli bir yaklaşımı öner. Yanıtını Türkçe ver.
+
+  - name: profile
+    description: Performans darboğazlarını bul ve profil öner
+    prompt: |
+      Seçili kodun performans darboğazlarını bul.
+      Hangi satırların CPU veya bellek yoğun olduğunu tahmin et.
+      Bu kodu profil etmek için scalene, cProfile veya line_profiler ile nasıl kullanılacağını göster.
+      Somut optimizasyon önerileri sun. Yanıtını Türkçe ver.
+
+  - name: typecheck
+    description: Type annotation ekle ve mypy uyumunu kontrol et
+    prompt: |
+      Seçili koda eksiksiz Python type annotation ekle.
+      Protocol sınıfları, TypeVar, Generic ve Union kullanımını gerektiği yerde uygula.
+      mypy --strict ile uyumlu olmasını sağla.
+      Değişiklikleri açıkla. Yanıtını Türkçe ver.
+
+  - name: docstring
+    description: Google stili docstring ekle
+    prompt: |
+      Seçili fonksiyon veya sınıfa Google stili docstring ekle.
+      Her parametre için tip, açıklama ve örnek değer belirt.
+      Returns, Raises ve Notes bölümlerini ekle.
+      Kompleks algoritmalar için Examples bölümüne çalışır bir kod örneği koy.
+      Yanıtını Türkçe ver.
+
+  - name: pytest
+    description: Kapsamlı pytest test suite üret
+    prompt: |
+      Seçili kod için kapsamlı bir pytest test suite yaz. Şunları dahil et:
+      (1) normal akış testleri
+      (2) sınır değer testleri
+      (3) hatalı girdi ve exception testleri
+      (4) varsa async davranış testleri
+      Her test fonksiyonuna açıklayıcı Türkçe docstring ekle.
+      @pytest.mark.parametrize kullan. Yanıtını Türkçe ver.
+
+  - name: refactor
+    description: SOLID prensiplerine uygun yeniden yapılandır
+    prompt: |
+      Seçili kodu SOLID prensiplerine göre yeniden yapılandır.
+      Tek sorumluluk ihlallerini, gizli bağımlılıkları ve soyutlama eksikliklerini belirle.
+      Sonuçtaki kodu daha test edilebilir, genişletilebilir ve bakımı kolay hale getir.
+      Her değişikliği gerekçelendir. Yanıtını Türkçe ver.
+
+  - name: numpy
+    description: Python döngülerini NumPy vektör operasyonlarına dönüştür
+    prompt: |
+      Seçili Python kodundaki döngüleri NumPy vektör operasyonlarına dönüştür.
+      Broadcasting kurallarını açıkla, bellek düzenini göz önünde bulundur.
+      Orijinal ve dönüştürülmüş versiyonun karmaşıklık farkını ve ne zaman numpy'ın avantajlı olmadığını da belirt.
+      Yanıtını Türkçe ver.
+
+  - name: async
+    description: Bloklayıcı kodu async/await yapısına dönüştür
+    prompt: |
+      Seçili bloklayıcı kodu modern Python async/await yapısına dönüştür.
+      asyncio.gather, asyncio.create_task ve context manager kullanımını göster.
+      I/O sınırlı vs CPU sınırlı ayrımını yap.
+      Yanıtını Türkçe ver.
+
+  - name: review
+    description: "Kod incelemesi: güvenlik, performans ve stil"
+    prompt: |
+      Seçili kodu üç boyutta incele:
+      (1) Güvenlik: injection, race condition, kaynak sızıntısı
+      (2) Performans: O(n²) döngüler, gereksiz kopya, bellek sızıntısı
+      (3) Stil ve bakım: adlandırma, okunabilirlik, PEP 8 uyumu
+      Her bulgu için öncelik belirt. Yanıtını Türkçe ver.
+
+  - name: api
+    description: Kütüphane API'sini tasarla veya değerlendir
+    prompt: |
+      Seçili kodu bir Python kütüphanesinin public API'si olarak değerlendir.
+      Kullanım kolaylığı, geriye dönük uyumluluk, overloading, özel metotlar gibi konuları değerlendir.
+      Alternatif API tasarımları öner. Yanıtını Türkçe ver.
+
+# ══════════════════════════════════════════════════════════════
+# MCP SERVERS
+# ══════════════════════════════════════════════════════════════
+mcpServers:
+  - name: web-search-homelab
+    type: sse
+    url: http://192.168.1.50:8000/sse
+    requestOptions:
+      headers:
+        X-API-Key: "your mcp key"
