@@ -7,14 +7,14 @@
 Bu rehber; kısıtlı donanım kaynaklarını (eski bir GPU laptop ve Proxmox tabanlı bir CPU sunucusu) en yüksek verimle birleştirmeyi amaçlayan, ağ seviyesinde tam izole, kurumsal düzeyde güvenli ve güncel,  Linux OS versiyon uyumsuzlukları giderilmiş, test edilmiş kurulum kılavuzudur. Farklı eski bilgisayarları tek bir yerel AI geliştirme altyapısında birleştirmek için hazırlanmıştır.
 
 v1'den farklı olarak:
-- Uzun konfigürasyon dosyaları ve script'ler `docs/v2/` altındaki klasörlere taşınmış, belgede sadece anlamları ve kullanımları açıklanmıştır.
+- Uzun konfigürasyon dosyaları ve scriptler `docs/v2/` altındaki klasörlere taşınmış, belgede sadece anlamları ve kullanımları açıklanmıştır.
 - v2 mimarisi, çıkarım (inference) servislerini betiklerin içinden tamamen soyutlayarak `.conf` dosyaları üzerinden dinamik olarak yönetmeyi amaçlar.
 - CPU/GPU modelleri artık **konfigürasyon dosyası (`*.conf`)** ve **tek bir kurulum script'i** ile yönetilmektedir.
 - Model geçişleri için `cpu-model-switch` ve `gpu-model-switch` araçları otomatik üretilir.
 - Unprivileged LXC'de `mlock` sorununa çözüm eklenmiştir.
 - MTP (Multi-Token Prediction) destekli modeller için `extra_params` kullanımı açıklanmıştır.
 
-> **📁 Klasör yapısı:** Tüm script'ler, konfigürasyon dosyaları ve IDE ayarları `docs/v2/` altında ilgili alt klasörlerde bulunmaktadır. Bu belge, içeriklerini değil, **neyin nerede olduğunu ve nasıl kullanılacağını** anlatır.
+> **📁 Klasör yapısı:** Tüm scriptler, konfigürasyon dosyaları ve IDE ayarları `docs/v2/` altında ilgili alt klasörlerde bulunmaktadır. Bu belge, içeriklerini değil, **neyin nerede olduğunu ve nasıl kullanılacağını** anlatır.
 
 > **Donanım Güvenlik Uyarısı:** Bellek kısıtları nedeniyle, `switch` komutu hedef modeli ayağa kaldırmadan önce çalışan diğer tüm `llama-` servislerini otomatik olarak güvenli bir şekilde durdurur. Manuel olarak aynı anda birden fazla ağır model açılmaya çalışılmamalıdır; aksi takdirde sunucu kilitlenebilecektir.
 
@@ -67,7 +67,7 @@ Amaç:
 
 Sistem, modelleri yeteneklerine, hızlarına ve bellek gereksinimlerine göre ayırarak **"Hiyerarşik Çıkarım (Hierarchical Inference)"** mantığıyla çalışır:
 
-* **Hızlı Katman (GPU Laptop - CachyOS(xfce4) ):** GTX 960M (4GB VRAM) üzerinde çalışan `Qwen3.5-4B-Claude-4.6-Opus-Reasoning-Distilled-GGUF` kod tamamlama (autocomplete) modeli. Tamamen VRAM'de kaldığı için anlık tepki süresi tatmin edici seviyede denebilr. Model thinking de yapabilmektedir.
+* **Hızlı Katman (GPU Laptop - CachyOS(xfce4) ):** GTX 960M (4GB VRAM) üzerinde çalışan `Qwen3.5-4B-Claude-4.6-Opus-Reasoning-Distilled-GGUF` kod tamamlama (autocomplete) modeli. Tamamen VRAM'de kaldığı için anlık tepki süresi tatmin edici seviyede denebilir. Model thinking de yapabilmektedir.
 * **Zeki Katman (CPU Sunucu - Proxmox LXC Debian 12):** 32GB RAM üzerinde 28GB lık kısımda koşan `Qwen3.6-35B-A3B-Claude-4.7-Opus-Reasoning-Distilled-APEX-MTP-GGUF` karmaşık akıl yürütme (reasoning) ve derin analiz modeli.
 * **Orkestrasyon ve Güvenlik Kapısı (LiteLLM Proxy):** İstemcinin hangi makineye bağlanacağını düşünmesine gerek kalmadan tek bir API arkasından modelleri ve istekleri yöneten akıllı yönlendirici.
 * **İstemci Makine (Geliştirme Bilgisayarı):** Sadece VS Code ve Continue.dev eklentisini ya da Opencode.ai Terminal / Desktop çalıştırır. Üzerinde hiçbir model yükü barındırmaz.
@@ -138,7 +138,7 @@ graph LR
 Mevcut ev/ofis ağının `192.168.1.X` bloğunda internete açık olduğunu varsayalım. Güvenliği sağlamak adına internete hiç çıkışı olmayan, tamamen izole ikinci bir yapay ağ (`10.10.10.X`) oluşturulur. GPU Laptop bu ağda ana ağ geçidi (Gateway) boş bırakılarak hapsedilir. Proxmox LXC ise çift ağ bacaklı olarak yapılandırılır: Bir bacağı internete (MCP servisleri ve güncellemeler için), diğer bacağı ise sadece GPU laptop ile konuşan izole ağa bakar. Dışarıdaki modem bu bloğu tanımadığı için veri sızıntısı fiziksel olarak imkansız hale gelir.
 
 
-1. **Proxmox Container (LXC - LiteLLM):** Çift ağ kartına sahip olacak . İlk kartı (`eth0`) `192.168.1.X` üzerinden internete ve MCP sunucularına bakarken , ikinci kartı (`eth1`) sadece yapay ve izole `10.10.10.X` tüneline bakacak .(**fiziksel olması gerekmiyor bridge olarak ayarlanır.**)
+1. **Proxmox Container (LXC - LiteLLM):** Çift ağ kartına sahip olacak . İlk kartı (`eth0`) `192.168.1.X` üzerinden internete ve MCP sunucularına bakarken , ikinci kartı (`eth1`) sadece yapay ve izole `10.10.10.X` tüneline bakacak .(**fiziksel var olması gerekmiyor bridge olarak ayarlanır.**)
 2. **Gizli ve İzole AI Ağı (`10.10.10.X`):** İnternet çıkışı, ağ geçidi (Gateway) ve harici fiziksel dünyayla bağı olmayan sanal bir switch (köprü) oluşturacağız .
 3. **GPU Laptop (CachyOS):** Bu izole ağdan bir IP (`10.10.10.3`) alacak ve varsayılan ağ geçidi boş bırakılarak, firewall yardımıyla tamamen bu tünele hapsedilecek .
 
@@ -182,7 +182,7 @@ Harici GPU laptopun fiziksel port kısıtlamasını aşmak için Proxmox tarafı
 
 ---
 
-Laptopumuz ağa tek bir ethernet kablosu ile bağlı olsa da, ortak hattan geçen paketleri ayırmak ve izole ağa dahil olabilmek için NetworkManager üzerinde `VLAN 10` etiketine sahip sanal bir ağ bacağı oluşturacağız. Ardından UFW ile bu bacağı tamamen dış dünyaya kapatacağız.
+Laptopumuz **ağa tek bir ethernet kablosu ile bağlı** olsa da, ortak hattan geçen paketleri ayırmak ve izole ağa dahil olabilmek için NetworkManager üzerinde `VLAN 10` etiketine sahip sanal bir ağ bacağı oluşturacağız. Ardından UFW ile bu bacağı tamamen dış dünyaya kapatacağız.
 
 #### Adım 1: Fiziksel Ağ Kartının Adını Öğrenme
 
@@ -494,7 +494,7 @@ Farklı modelleri içeren örnek bir tam konfigürasyon dosyası `docs/v2/script
 > `gpu_katman`: GPU'ya yüklenecek katman sayısı. 33, 4GB VRAM'de Q4_K_M modellerini tamamen sığdırır.
 
 
-**Önemli not:** cpu tarafından farklı olarak bu gpu tarafında, ilgili conf dosyasında tüm alternatif modeller `aynı port`tan kalkmak(8080) üzere ayarlanmıştır. gpu tarafında çok fazla model denemesi beklenmediği ve internete kapalı bir yapı kurulduğu için bu daha pratik görülmüştür. istenildiği zaman conf dosyasından port kısmı değiştirilebilir. burada amaç LiteLLM tarafında gpu tarafı için değişkliklerle uğraşmamaktır.
+**Önemli not:** cpu tarafından farklı olarak bu gpu tarafında, ilgili conf dosyasında tüm alternatif modeller `aynı port`tan kalkmak(8080) üzere ayarlanmıştır. gpu tarafında çok fazla model denemesi beklenmediği ve internete kapalı bir yapı kurulduğu için bu daha pratik görülmüştür. İstenildiği zaman conf dosyasından port kısmı değiştirilebilir. Burada amaç LiteLLM tarafında gpu tarafı için değişikliklerle uğraşmamaktır.
 
 ##### B.1.4.1-B GPU Servis Kurulum Scripti (`install_gpu_services.sh`)
 
@@ -620,7 +620,7 @@ komutunu kullanınız.
 ## B.2 — CPU SUNUCU KURULUMU (Proxmox LXC - Debian 12) 
 
 #### LXC + Debian 12 + llama.cpp CPU + LiteLLM
-**LXC (Linux Container)** `cpu=host` olarak ayarlandığında  işletim sistemi çekirdeğini host ile paylaşır, sadece kullanıcı alanını izole eder. Sonuç: bare-metal'a %95 yakın performans, ama yine de güvenli izolasyon. 32GB RAM'in tamamını modele verebilirsiniz,ama iyi olanı 28GB civarı olacaktır.
+**LXC (Linux Container)** `cpu=host` olarak ayarlandığında  işletim sistemi çekirdeğini host ile paylaşır, sadece kullanıcı alanını izole eder. Sonuç: bare-metal'a %95 yakın performans, ama yine de güvenli izolasyon. 32GB RAM'in tamamını modele verebilirsiniz, ama iyi olanı 28GB civarı olacaktır.
 
 Burada hem büyük kod modeli hem de LiteLLM proxy çalışacak. Ayrıca web_search_mcp server ı.
 
@@ -866,7 +866,8 @@ Kullanım:
 chmod +x install_cpu_services.sh
 ./install_cpu_services.sh   # LXC içinde root, sudo gerekmez
 ```
-- Model dosyalarının varlığı kontrol edilir, eksikse uyarı verir ama `indirme yapmaz` (manuel indirmeniz gerekiyor)
+- Model dosyalarının varlığı kontrol edilir, eksikse uyarı verir ama `indirme yapmaz` (manuel indirmeniz gerekiyor).
+- eğer model yoksa indirme linklerini çıktıda hazır verir.
 - Argüman gerekmez – sadece  ./install_cpu_services.sh çalıştırılır.
 - Tek bir betik hem `servis`leri hem de `cpu-model-switch` aracını yoksa **oluşturur** varsa **günceller**.
 - Konfigürasyon (*.conf dosyası) değişince  aynı komutu çalıştırarak tüm service leri ve scripti güncelleyebilirsiniz.
@@ -1054,7 +1055,7 @@ Bu dosyada:
 - Özel slash komutlar (`/complexity`, `/profile`, `/review` vb.) mevcuttur.
 - MCP web search sunucusu `mcpServers` bölümünde tanımlanmıştır.
 
-Kullanıcı,  `docs/v2/configs/continue-config.yaml` dosyası içeriği kopyalayıp `~/.continue/config.yaml` konumuna ekleyerek içindeki IP adreslerini ve anahtarları kendi ağına göre düzenlemelidir.
+Kullanıcı,  `docs/v2/configs/continue-config.yaml` dosyası içeriğini kopyalayıp `~/.continue/config.yaml` konumuna ekleyerek kullanabilir, içindeki IP adreslerini ve anahtarları kendi ağına göre düzenlemelidir.
 
 Bu ayarlarla artık Continue.dev sohbet ekranında  modeller arasında geçiş yapabilirsiniz.
 - (tavsiye) mcp server için vscode'da ayarlarda, ilgili kısımda `ask` yerine `otomatik` olarak ayarlayabilirsiniz.
