@@ -219,7 +219,7 @@ Yeni modeller ve optimizasyonlar kolayca eklenip test edilebilir.
 Bu README, mimarinin genel görünümünü ve tasarım kararlarını özetlemektedir. Kurulum adımları, konfigürasyon örnekleri ve operasyonel detaylar ise `docs/v2` altında yer almaktadır.
 
 
-Yeni kurulumlar için **`docs/v2/homelab-ai-setups.md`** dosyası ile başlanması önerilir. 
+Yeni kurulumlar için **[`docs/v2/homelab-ai-setups.md`](docs/v2/homelab-ai-setups.md)** dosyası ile başlanması önerilir. 
 
 Bu doküman;
 
