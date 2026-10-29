@@ -1,0 +1,21 @@
+[Unit]
+Description=Homelab MCP Web Search Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/ai_engine
+EnvironmentFile=/etc/ai-brain/mcp-web-search.env
+ExecStart={{PYTHON_BIN}} /opt/ai_engine/web_search_mcp.py
+Restart=always
+RestartSec=5
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/opt/ai_engine
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,45 @@
+# /opt/litellm/config.yaml
+model_list:
+  # ── GPU LAPTOP — 10.10.10.3 (hep açık, ayrı kalıyor) ──
+  - model_name: hizli-gpu
+    litellm_params:
+      model: openai/custom
+      api_base: http://10.10.10.3:8080/v1
+      api_key: dummy
+      timeout: 60
+    roles: { "system": "system", "user": "user", "assistant": "assistant" }
+
+  - model_name: hizli-embed
+    litellm_params:
+      model: openai/custom
+      api_base: http://10.10.10.3:8081/v1
+      custom_endpoint_type: "openai"
+      api_key: dummy
+      timeout: 60
+
+  # ── CPU SUNUCU — 127.0.0.1 (tek anda tek model, TEK BLOK) ──
+  # NOT: Tek wildcard blok, cpu_models.conf'taki ortak konvansiyona (hepsi 8080)
+  # dayanir. Port ZORUNLULUGU YOKTUR - her modele farkli port verilebilir; o durumda
+  # api_base'i guncelleyin veya model basina ayri blok tanimlayin. Tek model kisiti
+  # donanimsaldir (RAM), portsal degildir.
+  - model_name: cpu-brain
+    litellm_params:
+      model: openai/*
+      api_base: http://127.0.0.1:8080/v1
+      api_key: dummy
+      timeout: 300
+    roles: { "system": "system", "user": "user", "assistant": "assistant" }
+
+litellm_settings:
+  check_provider_endpoint: true   # dropdown'da o an aktif modeli gostermeye calisir
+  # NOT: bu wildcard+custom-api_base kombinasyonunda discovery'nin garantili
+  # calistigi dokumante edilmemis (resmi liste: Fireworks/OpenAI/Gemini/LiteLLM
+  # Proxy/Topaz/Anthropic/XAI/VLLM/Vertex - self-hosted custom endpoint icin
+  # acik bir GitHub issue var). Routing (istek atma) kesin calisir; sadece
+  # /v1/models'daki OTOMATIK listeleme calismazsa, client'ta model adini
+  # "cpu-brain/<gercek-model-adi>" seklinde elle yazman yeterli olur.
+
+general_settings:
+  master_key: "{{LITELLM_MASTER_KEY}}"
+  request_timeout: 600
+  store_model_in_db: false

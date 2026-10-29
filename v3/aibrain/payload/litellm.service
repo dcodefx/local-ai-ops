@@ -1,0 +1,16 @@
+[Unit]
+Description=LiteLLM Proxy Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/litellm
+ExecStart={{LITELLM_BIN}} --config /opt/litellm/config.yaml --port 4000
+Restart=always
+RestartSec=5
+NoNewPrivileges=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
