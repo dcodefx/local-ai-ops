@@ -1,0 +1,19 @@
+# Local environment and secrets
+.ai-brain-lxc.env
+.ai-brain-vm.env
+.ai-brain.env
+*-keys.txt
+pve-*.txt
+pve-credentials.txt
+*.log
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# Temporary files
+*.tmp
+*.bak
